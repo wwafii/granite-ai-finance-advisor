@@ -31,7 +31,7 @@ const FinancialSummary = ({ transactions }: FinancialSummaryProps) => {
   const expensesByCategory = transactions
     .filter(t => t.amount < 0)
     .reduce((acc, t) => {
-      const category = t.category || 'Lainnya';
+      const category = t.category || 'Other';
       acc[category] = (acc[category] || 0) + Math.abs(t.amount);
       return acc;
     }, {} as Record<string, number>);
@@ -41,9 +41,9 @@ const FinancialSummary = ({ transactions }: FinancialSummaryProps) => {
     .slice(0, 5);
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('id-ID', {
+    return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'IDR',
+      currency: 'USD',
       minimumFractionDigits: 0,
     }).format(amount);
   };
@@ -58,7 +58,7 @@ const FinancialSummary = ({ transactions }: FinancialSummaryProps) => {
             <h3 className="text-2xl font-bold text-income-foreground">
               {formatCurrency(totalIncome)}
             </h3>
-            <p className="text-income-foreground/80">Total Pemasukan</p>
+            <p className="text-income-foreground/80">Total Income</p>
           </CardContent>
         </Card>
 
@@ -68,7 +68,7 @@ const FinancialSummary = ({ transactions }: FinancialSummaryProps) => {
             <h3 className="text-2xl font-bold text-expense-foreground">
               {formatCurrency(totalExpenses)}
             </h3>
-            <p className="text-expense-foreground/80">Total Pengeluaran</p>
+            <p className="text-expense-foreground/80">Total Expenses</p>
           </CardContent>
         </Card>
 
@@ -78,7 +78,7 @@ const FinancialSummary = ({ transactions }: FinancialSummaryProps) => {
             <h3 className="text-2xl font-bold text-primary-foreground">
               {formatCurrency(netSavings)}
             </h3>
-            <p className="text-primary-foreground/80">Net Tabungan</p>
+            <p className="text-primary-foreground/80">Net Savings</p>
           </CardContent>
         </Card>
 
@@ -88,7 +88,7 @@ const FinancialSummary = ({ transactions }: FinancialSummaryProps) => {
             <h3 className="text-2xl font-bold text-warning-foreground">
               {savingsRate.toFixed(1)}%
             </h3>
-            <p className="text-warning-foreground/80">Tingkat Tabungan</p>
+            <p className="text-warning-foreground/80">Savings Rate</p>
           </CardContent>
         </Card>
       </div>
@@ -96,33 +96,33 @@ const FinancialSummary = ({ transactions }: FinancialSummaryProps) => {
       {/* Savings Rate Progress */}
       <Card className="border-0 shadow-lg">
         <CardHeader>
-          <CardTitle>Tingkat Tabungan</CardTitle>
+          <CardTitle>Savings Rate Analysis</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
             <div className="flex justify-between text-sm">
-              <span>Progress menabung Anda</span>
+              <span>Your savings progress</span>
               <span>{savingsRate.toFixed(1)}%</span>
             </div>
             <Progress value={Math.max(0, Math.min(100, savingsRate))} className="h-3" />
             <div className="flex justify-between text-xs text-muted-foreground">
-              <span>Target minimum: 20%</span>
-              <span>Target ideal: 30%</span>
+              <span>Minimum target: 20%</span>
+              <span>Ideal target: 30%</span>
             </div>
             {savingsRate < 20 && (
               <Badge variant="destructive" className="mt-2">
                 <AlertTriangle className="w-3 h-3 mr-1" />
-                Perlu meningkatkan tabungan
+                Need to improve savings
               </Badge>
             )}
             {savingsRate >= 20 && savingsRate < 30 && (
               <Badge variant="secondary" className="mt-2">
-                Tabungan cukup baik
+                Good savings rate
               </Badge>
             )}
             {savingsRate >= 30 && (
               <Badge className="mt-2 bg-success text-success-foreground">
-                Tabungan sangat baik!
+                Excellent savings rate!
               </Badge>
             )}
           </div>
@@ -132,7 +132,7 @@ const FinancialSummary = ({ transactions }: FinancialSummaryProps) => {
       {/* Category Breakdown */}
       <Card className="border-0 shadow-lg">
         <CardHeader>
-          <CardTitle>Pengeluaran per Kategori</CardTitle>
+          <CardTitle>Expenses by Category</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
@@ -155,35 +155,35 @@ const FinancialSummary = ({ transactions }: FinancialSummaryProps) => {
       {/* Quick Insights */}
       <Card className="border-0 shadow-lg">
         <CardHeader>
-          <CardTitle>Insight Cepat</CardTitle>
+          <CardTitle>Quick Insights</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
             <div className="p-4 bg-primary/10 rounded-lg">
-              <h4 className="font-semibold text-primary mb-1">Total Transaksi</h4>
+              <h4 className="font-semibold text-primary mb-1">Total Transactions</h4>
               <p className="text-sm text-muted-foreground">
-                Anda memiliki {transactions.length} transaksi yang tercatat
+                You have {transactions.length} recorded transactions
               </p>
             </div>
             
             {topCategories.length > 0 && (
               <div className="p-4 bg-warning/10 rounded-lg">
-                <h4 className="font-semibold text-warning mb-1">Kategori Terbesar</h4>
+                <h4 className="font-semibold text-warning mb-1">Largest Category</h4>
                 <p className="text-sm text-muted-foreground">
-                  Pengeluaran terbesar ada di kategori "{topCategories[0][0]}" 
-                  sebesar {formatCurrency(topCategories[0][1])}
+                  Your biggest expense category is "{topCategories[0][0]}" 
+                  with {formatCurrency(topCategories[0][1])}
                 </p>
               </div>
             )}
             
             <div className={`p-4 rounded-lg ${netSavings >= 0 ? 'bg-success/10' : 'bg-expense/10'}`}>
               <h4 className={`font-semibold mb-1 ${netSavings >= 0 ? 'text-success' : 'text-expense'}`}>
-                Status Keuangan
+                Financial Status
               </h4>
               <p className="text-sm text-muted-foreground">
                 {netSavings >= 0 
-                  ? `Selamat! Anda berhasil menabung ${formatCurrency(netSavings)} bulan ini`
-                  : `Anda mengalami defisit sebesar ${formatCurrency(Math.abs(netSavings))} bulan ini`
+                  ? `Great! You saved ${formatCurrency(netSavings)} this period`
+                  : `You have a deficit of ${formatCurrency(Math.abs(netSavings))} this period`
                 }
               </p>
             </div>
