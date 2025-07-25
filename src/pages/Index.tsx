@@ -48,7 +48,7 @@ const Index = () => {
           </div>
         );
       default:
-        return <FinancialDashboard />;
+        return <FinancialDashboard onDataUpload={handleDataUpload} />;
     }
   };
 

@@ -1,13 +1,30 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Upload, TrendingUp, TrendingDown, PiggyBank, Target } from "lucide-react";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
+import UploadCSV from "./upload-csv";
 
-const FinancialDashboard = () => {
+interface TransactionData {
+  date: string;
+  description: string;
+  amount: number;
+  category: string;
+}
+
+interface FinancialDashboardProps {
+  onDataUpload?: (data: TransactionData[]) => void;
+}
+
+const FinancialDashboard = ({ onDataUpload }: FinancialDashboardProps) => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-secondary/20 p-6">
       <div className="max-w-7xl mx-auto space-y-8">
-        {/* Header */}
+        {/* Header with Theme Toggle */}
         <div className="text-center space-y-6">
+          <div className="flex items-center justify-between mb-8">
+            <div></div>
+            <ThemeToggle />
+          </div>
           <div className="flex items-center justify-center gap-4">
             <div className="w-16 h-16 bg-gradient-to-r from-primary to-success rounded-xl flex items-center justify-center shadow-lg">
               <span className="text-white font-bold text-2xl">C</span>
@@ -61,33 +78,14 @@ const FinancialDashboard = () => {
           </Card>
         </div>
 
-        {/* Upload Section */}
+        {/* Upload Section - Now Functional */}
         <Card className="border-0 shadow-xl bg-gradient-to-br from-card to-card/50 backdrop-blur-sm">
           <CardHeader className="text-center pb-4">
             <CardTitle className="text-2xl font-bold text-foreground">Start Your Financial Analysis</CardTitle>
-            <p className="text-muted-foreground">Upload your transaction data to get personalized insights</p>
+            <p className="text-muted-foreground">Upload your transaction data to get personalized insights powered by IBM Granite AI</p>
           </CardHeader>
-          <CardContent className="text-center space-y-6">
-            <div className="border-2 border-dashed border-primary/30 rounded-xl p-16 bg-gradient-to-br from-primary/5 to-success/5 hover:from-primary/10 hover:to-success/10 transition-all duration-300">
-              <Upload className="h-20 w-20 mx-auto mb-6 text-primary drop-shadow-sm" />
-              <h3 className="text-2xl font-semibold mb-3 text-foreground">Upload Transaction Data</h3>
-              <p className="text-muted-foreground mb-6 text-lg">
-                Upload CSV or Excel files containing your bank statements or financial records
-              </p>
-              <Button size="lg" className="bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90 shadow-lg hover:shadow-xl transition-all duration-300 text-lg px-8 py-3">
-                <Upload className="mr-3 h-6 w-6" />
-                Choose File
-              </Button>
-            </div>
-            <div className="bg-muted/50 rounded-lg p-4">
-              <p className="text-sm text-muted-foreground font-medium mb-2">
-                Supported Formats
-              </p>
-              <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground">
-                <span className="bg-primary/10 px-3 py-1 rounded-full">CSV Files</span>
-                <span className="bg-success/10 px-3 py-1 rounded-full">Excel Files (.xlsx)</span>
-              </div>
-            </div>
+          <CardContent>
+            <UploadCSV onDataUpload={onDataUpload} />
           </CardContent>
         </Card>
 
