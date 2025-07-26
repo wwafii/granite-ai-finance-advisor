@@ -59,11 +59,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const signUp = async (email: string, password: string, fullName?: string) => {
+    // Send magic link instead of password signup
     const redirectUrl = `${window.location.origin}/`;
     
-    const { error } = await supabase.auth.signUp({
+    const { error } = await supabase.auth.signInWithOtp({
       email,
-      password,
       options: {
         emailRedirectTo: redirectUrl,
         data: {

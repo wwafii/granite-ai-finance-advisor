@@ -66,8 +66,8 @@ const Auth = () => {
       });
     } else {
       toast({
-        title: "Account created!",
-        description: "Please check your email to verify your account.",
+        title: "Berhasil!",
+        description: "Silahkan cek email Anda untuk link masuk otomatis. Klik link tersebut untuk langsung masuk ke aplikasi.",
       });
     }
     setIsLoading(false);
@@ -168,10 +168,12 @@ const Auth = () => {
                       id="signup-password"
                       name="password"
                       type="password"
-                      placeholder="Create a password"
-                      required
+                      placeholder="Password (opsional untuk magic link)"
                       disabled={isLoading}
                     />
+                    <p className="text-sm text-muted-foreground">
+                      Anda akan menerima link login di email untuk masuk otomatis
+                    </p>
                   </div>
                   {error && (
                     <Alert variant="destructive">

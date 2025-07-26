@@ -42,12 +42,24 @@ const UploadCSV = ({ onDataUpload }: UploadCSVProps) => {
   };
 
   const handleFileSelect = (file: File) => {
+    // Validate file type
     const isValidFormat = file.name.endsWith('.csv') || file.name.endsWith('.xlsx') || file.name.endsWith('.xls');
     
     if (!isValidFormat) {
       toast({
-        title: "Invalid file format",
-        description: "Please upload CSV or Excel files only",
+        title: "Format file tidak valid",
+        description: "Harap upload file CSV atau Excel saja (.csv, .xlsx, .xls)",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validate file size (max 10MB)
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    if (file.size > maxSize) {
+      toast({
+        title: "File terlalu besar",
+        description: "Ukuran file maksimal adalah 10MB",
         variant: "destructive",
       });
       return;
@@ -57,44 +69,123 @@ const UploadCSV = ({ onDataUpload }: UploadCSVProps) => {
   };
 
   const processExcelFile = async (file: File): Promise<TransactionData[]> => {
-    const arrayBuffer = await file.arrayBuffer();
-    const workbook = XLSX.read(arrayBuffer, { type: 'array' });
-    const sheetName = workbook.SheetNames[0];
-    const worksheet = workbook.Sheets[sheetName];
-    const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-    
-    // Skip header row and process data
-    const transactions: TransactionData[] = (jsonData as any[]).slice(1).map((row: any[], index) => {
-      const [date, description, amount, category] = row;
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      const workbook = XLSX.read(arrayBuffer, { type: 'array' });
       
-      return {
-        date: date ? String(date) : `2024-01-${String(index + 1).padStart(2, '0')}`,
-        description: description ? String(description) : 'Transaction',
-        amount: typeof amount === 'number' ? amount : parseFloat(String(amount)) || 0,
-        category: category ? String(category) : 'Other'
-      };
-    }).filter(transaction => transaction.amount !== 0); // Filter out empty rows
-    
-    return transactions;
+      if (workbook.SheetNames.length === 0) {
+        throw new Error("File Excel tidak memiliki worksheet");
+      }
+      
+      const sheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[sheetName];
+      const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+      
+      if (jsonData.length < 2) {
+        throw new Error("File Excel harus memiliki minimal 2 baris (header + data)");
+      }
+      
+      // Validate header structure
+      const headerRow = jsonData[0] as any[];
+      const expectedHeaders = ['date', 'description', 'amount', 'category'];
+      const headerValid = headerRow && headerRow.length >= 4;
+      
+      if (!headerValid) {
+        throw new Error("Header tidak valid. Format yang benar: Date, Description, Amount, Category");
+      }
+      
+      // Skip header row and process data
+      const transactions: TransactionData[] = (jsonData as any[])
+        .slice(1)
+        .map((row: any[], index) => {
+          if (!row || row.length < 4) {
+            throw new Error(`Baris ${index + 2} tidak lengkap. Diperlukan 4 kolom: Date, Description, Amount, Category`);
+          }
+          
+          const [date, description, amount, category] = row;
+          
+          // Validate amount is a number
+          const parsedAmount = typeof amount === 'number' ? amount : parseFloat(String(amount));
+          if (isNaN(parsedAmount)) {
+            throw new Error(`Baris ${index + 2}: Amount harus berupa angka (${amount})`);
+          }
+          
+          return {
+            date: date ? String(date) : `2024-01-${String(index + 1).padStart(2, '0')}`,
+            description: description ? String(description) : 'Transaction',
+            amount: parsedAmount,
+            category: category ? String(category) : 'Other'
+          };
+        })
+        .filter(transaction => transaction.amount !== 0); // Filter out empty rows
+      
+      if (transactions.length === 0) {
+        throw new Error("Tidak ada data transaksi valid ditemukan");
+      }
+      
+      return transactions;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw new Error("Gagal memproses file Excel. Pastikan format file benar dan tidak corrupt");
+    }
   };
 
   const processCSVFile = async (file: File): Promise<TransactionData[]> => {
-    const text = await file.text();
-    const lines = text.split('\n').filter(line => line.trim());
-    
-    // Skip header row and process data
-    const transactions: TransactionData[] = lines.slice(1).map((line, index) => {
-      const [date, description, amount, category] = line.split(',').map(item => item.trim().replace(/['"]/g, ''));
+    try {
+      const text = await file.text();
+      const lines = text.split('\n').filter(line => line.trim());
       
-      return {
-        date: date || `2024-01-${String(index + 1).padStart(2, '0')}`,
-        description: description || 'Transaction',
-        amount: parseFloat(amount) || 0,
-        category: category || 'Other'
-      };
-    });
-    
-    return transactions;
+      if (lines.length < 2) {
+        throw new Error("File CSV harus memiliki minimal 2 baris (header + data)");
+      }
+      
+      // Validate header
+      const headerLine = lines[0];
+      const headers = headerLine.split(',').map(h => h.trim().toLowerCase().replace(/['"]/g, ''));
+      const expectedHeaders = ['date', 'description', 'amount', 'category'];
+      const hasValidHeaders = headers.length >= 4;
+      
+      if (!hasValidHeaders) {
+        throw new Error("Header CSV tidak valid. Format yang benar: Date, Description, Amount, Category");
+      }
+      
+      // Skip header row and process data
+      const transactions: TransactionData[] = lines.slice(1).map((line, index) => {
+        const columns = line.split(',').map(item => item.trim().replace(/['"]/g, ''));
+        
+        if (columns.length < 4) {
+          throw new Error(`Baris ${index + 2} tidak lengkap. Diperlukan 4 kolom: Date, Description, Amount, Category`);
+        }
+        
+        const [date, description, amount, category] = columns;
+        
+        // Validate amount is a number
+        const parsedAmount = parseFloat(amount);
+        if (isNaN(parsedAmount)) {
+          throw new Error(`Baris ${index + 2}: Amount harus berupa angka (${amount})`);
+        }
+        
+        return {
+          date: date || `2024-01-${String(index + 1).padStart(2, '0')}`,
+          description: description || 'Transaction',
+          amount: parsedAmount,
+          category: category || 'Other'
+        };
+      }).filter(transaction => transaction.amount !== 0);
+      
+      if (transactions.length === 0) {
+        throw new Error("Tidak ada data transaksi valid ditemukan");
+      }
+      
+      return transactions;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw new Error("Gagal memproses file CSV. Pastikan format file benar dan menggunakan koma sebagai separator");
+    }
   };
 
   const processFile = async () => {
@@ -119,11 +210,13 @@ const UploadCSV = ({ onDataUpload }: UploadCSVProps) => {
       });
       
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Gagal memproses file";
       toast({
-        title: "Failed to process file",
-        description: "Please ensure your file format is correct",
+        title: "Gagal memproses file",
+        description: errorMessage,
         variant: "destructive",
       });
+      console.error("File processing error:", error);
     } finally {
       setIsProcessing(false);
     }
