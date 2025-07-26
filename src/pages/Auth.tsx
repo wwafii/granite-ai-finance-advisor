@@ -171,7 +171,7 @@ const Auth = () => {
                       placeholder="Password"
                       disabled={isLoading}
                     />
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-muted-foreground text-center">
                       You’ll receive a login link via email for automatic access.
                     </p>
                   </div>
@@ -182,7 +182,7 @@ const Auth = () => {
                   )}
                   <Button type="submit" className="w-full" disabled={isLoading}>
                     {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                    Create Account
+                    Sign Up
                   </Button>
                 </form>
               </TabsContent>
