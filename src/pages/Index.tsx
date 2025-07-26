@@ -1,7 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/components/auth/auth-provider";
 import FinancialDashboard from "@/components/financial/dashboard";
-import UploadCSV from "@/components/financial/upload-csv";
 import FinancialSummary from "@/components/financial/financial-summary";
+import UploadCSV from "@/components/financial/upload-csv";
+import { useNavigate } from "react-router-dom";
+import { LogOut, User } from "lucide-react";
 
 interface TransactionData {
   date: string;
@@ -13,6 +17,14 @@ interface TransactionData {
 const Index = () => {
   const [transactions, setTransactions] = useState<TransactionData[]>([]);
   const [currentView, setCurrentView] = useState<'dashboard' | 'upload' | 'summary'>('dashboard');
+  const { user, loading, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate('/auth');
+    }
+  }, [user, loading, navigate]);
 
   const handleDataUpload = (data: TransactionData[]) => {
     setTransactions(data);
@@ -52,50 +64,78 @@ const Index = () => {
     }
   };
 
-  return (
-    <div>
-      {/* Navigation */}
-      {currentView !== 'dashboard' && (
-        <div className="bg-card border-b p-4">
-          <div className="max-w-7xl mx-auto flex justify-between items-center">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-gradient-to-r from-primary to-success rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold">C</span>
-              </div>
-              <button
-                onClick={() => setCurrentView('dashboard')}
-                className="text-primary hover:text-primary/80 font-medium"
-              >
-                ← Back to Dashboard
-              </button>
-            </div>
-            {currentView === 'summary' && (
-              <button
-                onClick={() => setCurrentView('upload')}
-                className="bg-gradient-to-r from-primary to-success text-white px-4 py-2 rounded-lg hover:shadow-lg transition-all duration-200"
-              >
-                Upload New Data
-              </button>
-            )}
-          </div>
+  if (loading) {
+      return (
+        <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background flex items-center justify-center">
+          <div className="animate-pulse text-lg">Loading...</div>
         </div>
-      )}
-      
-      {/* Main Content */}
-      {renderView()}
-      
-      {/* Floating Upload Button for Dashboard */}
-      {currentView === 'dashboard' && (
-        <button
-          onClick={() => setCurrentView('upload')}
-          className="fixed bottom-8 right-8 bg-gradient-to-r from-primary to-success text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
-          aria-label="Upload Financial Data"
-        >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-          </svg>
-        </button>
-      )}
+      );
+    }
+
+    if (!user) {
+      return null; // Will redirect to auth
+  }
+
+  return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background">
+        <nav className="p-4 border-b bg-background/80 backdrop-blur-sm">
+          <div className="max-w-6xl mx-auto flex justify-between items-center">
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-success bg-clip-text text-transparent">
+              Finance Advisor
+            </h1>
+            <div className="flex items-center gap-4">
+              <div className="flex gap-2">
+                <Button
+                  variant={currentView === 'dashboard' ? 'default' : 'outline'}
+                  onClick={() => setCurrentView('dashboard')}
+                  size="sm"
+                >
+                  Dashboard
+                </Button>
+                <Button
+                  variant={currentView === 'summary' ? 'default' : 'outline'}
+                  onClick={() => setCurrentView('summary')}
+                  size="sm"
+                  disabled={transactions.length === 0}
+                >
+                  Analysis
+                </Button>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <User className="h-4 w-4" />
+                  {user.email}
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => signOut()}
+                  className="flex items-center gap-2"
+                >
+                  <LogOut className="h-4 w-4" />
+                  Sign Out
+                </Button>
+              </div>
+            </div>
+          </div>
+        </nav>
+
+        <div className="container mx-auto p-6">
+          {renderView()}
+        </div>
+
+        {/* Floating Upload Button for Dashboard */}
+        {currentView === 'dashboard' && (
+          <Button
+            onClick={() => setCurrentView('upload')}
+            className="fixed bottom-8 right-8 bg-gradient-to-r from-primary to-success shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 rounded-full p-4"
+            aria-label="Upload Financial Data"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+            </svg>
+          </Button>
+        )}
     </div>
   );
 };

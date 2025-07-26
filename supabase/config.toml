@@ -1,1 +1,4 @@
 project_id = "wnfiacldpmvzhgfnekqa"
+
+[functions.granite-insights]
+verify_jwt = true

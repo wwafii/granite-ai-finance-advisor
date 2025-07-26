@@ -1,6 +1,8 @@
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Brain, Zap, TrendingUp } from "lucide-react";
+import { Brain, Zap, TrendingUp, Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface TransactionData {
   date: string;
@@ -17,9 +19,25 @@ interface GraniteInsightsProps {
 export const GraniteInsights = ({ transactions, currency }: GraniteInsightsProps) => {
   // This component will integrate with IBM Granite via Supabase Edge Functions
   
-  const generateSmartInsights = () => {
-    // This would call IBM Granite AI via Supabase Edge Function
-    console.log("Calling IBM Granite AI for advanced insights...");
+  const [insights, setInsights] = useState<string>('');
+  const [loading, setLoading] = useState(false);
+  
+  const generateSmartInsights = async () => {
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('granite-insights', {
+        body: { transactions }
+      });
+
+      if (error) throw error;
+
+      setInsights(data.insights || 'No insights generated');
+    } catch (error) {
+      console.error('Error generating insights:', error);
+      setInsights('Unable to generate insights at this time. Please try again later.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -67,14 +85,25 @@ export const GraniteInsights = ({ transactions, currency }: GraniteInsightsProps
           </p>
           <Button 
             onClick={generateSmartInsights}
+            disabled={loading}
             className="bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90"
           >
-            Setup AI Integration
+            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {loading ? 'Generating Insights...' : 'Generate AI Insights'}
           </Button>
         </div>
 
+        {insights && (
+          <div className="bg-gradient-to-r from-success/10 to-primary/10 p-4 rounded-lg border border-success/20">
+            <h4 className="font-semibold text-foreground mb-2">🧠 AI Insights</h4>
+            <div className="text-sm text-muted-foreground whitespace-pre-wrap">
+              {insights}
+            </div>
+          </div>
+        )}
+
         <div className="text-xs text-muted-foreground bg-muted/30 p-3 rounded-lg">
-          <strong>Note:</strong> IBM Granite integration requires Supabase backend setup for advanced AI features including:
+          <strong>Note:</strong> IBM Granite integration provides advanced AI features including:
           • Real-time spending analysis • Anomaly detection • Personalized budget recommendations • Smart savings goals
         </div>
       </CardContent>
