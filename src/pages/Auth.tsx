@@ -66,8 +66,8 @@ const Auth = () => {
       });
     } else {
       toast({
-        title: "Berhasil!",
-        description: "Silahkan cek email Anda untuk link masuk otomatis. Klik link tersebut untuk langsung masuk ke aplikasi.",
+        title: "Success!",
+        description: "Check your email for the login link to access the app."
       });
     }
     setIsLoading(false);
@@ -76,17 +76,6 @@ const Auth = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/50 flex items-center justify-center p-4">
       <div className="w-full max-w-md space-y-6">
-        <div className="flex items-center gap-2 mb-6">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => navigate('/')}
-            className="flex items-center gap-2"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Back to App
-          </Button>
-        </div>
 
         <Card className="border-0 shadow-lg">
           <CardHeader className="text-center">
