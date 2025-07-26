@@ -168,11 +168,11 @@ const Auth = () => {
                       id="signup-password"
                       name="password"
                       type="password"
-                      placeholder="Password (opsional untuk magic link)"
+                      placeholder="Password"
                       disabled={isLoading}
                     />
                     <p className="text-sm text-muted-foreground">
-                      Anda akan menerima link login di email untuk masuk otomatis
+                      You’ll receive a login link via email for automatic access.
                     </p>
                   </div>
                   {error && (
