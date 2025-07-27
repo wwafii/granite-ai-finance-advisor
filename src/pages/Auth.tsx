@@ -76,19 +76,6 @@ const Auth = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/50 flex items-center justify-center p-2 sm:p-4">
       <div className="w-full max-w-sm sm:max-w-md space-y-4 sm:space-y-6">
-        {/* Back button - mobile responsive */}
-        <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => navigate('/')}
-            className="flex items-center gap-2 text-xs sm:text-sm"
-          >
-            <ArrowLeft className="h-3 w-3 sm:h-4 sm:w-4" />
-            <span className="hidden xs:inline">Back to App</span>
-            <span className="xs:hidden">Back</span>
-          </Button>
-        </div>
 
         <Card className="border-0 shadow-lg">
           <CardHeader className="text-center px-4 sm:px-6 py-4 sm:py-6">
@@ -174,12 +161,12 @@ const Auth = () => {
                       id="signup-password"
                       name="password"
                       type="password"
-                      placeholder="Password (optional)"
+                      placeholder="Password"
                       disabled={isLoading}
                       className="h-9 sm:h-10 text-sm"
                     />
                     <p className="text-xs sm:text-sm text-muted-foreground text-center px-2">
-                      We'll send a secure login link to your email address for instant access.
+                      We'll send a secure login link to your email address  
                     </p>
                   </div>
                   {error && (
@@ -189,7 +176,7 @@ const Auth = () => {
                   )}
                   <Button type="submit" className="w-full h-9 sm:h-10 text-sm" disabled={isLoading}>
                     {isLoading && <Loader2 className="mr-2 h-3 w-3 sm:h-4 sm:w-4 animate-spin" />}
-                    Create Account
+                    Sign Up
                   </Button>
                 </form>
               </TabsContent>
