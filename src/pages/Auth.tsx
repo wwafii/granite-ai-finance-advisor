@@ -66,35 +66,48 @@ const Auth = () => {
       });
     } else {
       toast({
-        title: "Success!",
-        description: "Check your email for the login link to access the app."
+        title: "Account Created Successfully!",
+        description: "We've sent a secure login link to your email. Click the link to access your financial dashboard instantly."
       });
     }
     setIsLoading(false);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-muted/50 flex items-center justify-center p-4">
-      <div className="w-full max-w-md space-y-6">
+    <div className="min-h-screen bg-gradient-to-br from-background to-muted/50 flex items-center justify-center p-2 sm:p-4">
+      <div className="w-full max-w-sm sm:max-w-md space-y-4 sm:space-y-6">
+        {/* Back button - mobile responsive */}
+        <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate('/')}
+            className="flex items-center gap-2 text-xs sm:text-sm"
+          >
+            <ArrowLeft className="h-3 w-3 sm:h-4 sm:w-4" />
+            <span className="hidden xs:inline">Back to App</span>
+            <span className="xs:hidden">Back</span>
+          </Button>
+        </div>
 
         <Card className="border-0 shadow-lg">
-          <CardHeader className="text-center">
-            <CardTitle className="text-2xl font-bold">Welcome</CardTitle>
-            <CardDescription>
+          <CardHeader className="text-center px-4 sm:px-6 py-4 sm:py-6">
+            <CardTitle className="text-xl sm:text-2xl font-bold">Welcome</CardTitle>
+            <CardDescription className="text-sm sm:text-base">
               Sign in to your account or create a new one
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="px-4 sm:px-6 pb-4 sm:pb-6">
             <Tabs defaultValue="signin" className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="signin">Sign In</TabsTrigger>
-                <TabsTrigger value="signup">Sign Up</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-2 h-9 sm:h-10">
+                <TabsTrigger value="signin" className="text-xs sm:text-sm">Sign In</TabsTrigger>
+                <TabsTrigger value="signup" className="text-xs sm:text-sm">Sign Up</TabsTrigger>
               </TabsList>
 
-              <TabsContent value="signin" className="space-y-4">
-                <form onSubmit={handleSignIn} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="signin-email">Email</Label>
+              <TabsContent value="signin" className="space-y-3 sm:space-y-4 mt-4 sm:mt-6">
+                <form onSubmit={handleSignIn} className="space-y-3 sm:space-y-4">
+                  <div className="space-y-1 sm:space-y-2">
+                    <Label htmlFor="signin-email" className="text-sm">Email</Label>
                     <Input
                       id="signin-email"
                       name="email"
@@ -102,10 +115,11 @@ const Auth = () => {
                       placeholder="your@email.com"
                       required
                       disabled={isLoading}
+                      className="h-9 sm:h-10 text-sm"
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="signin-password">Password</Label>
+                  <div className="space-y-1 sm:space-y-2">
+                    <Label htmlFor="signin-password" className="text-sm">Password</Label>
                     <Input
                       id="signin-password"
                       name="password"
@@ -113,6 +127,7 @@ const Auth = () => {
                       placeholder="Enter your password"
                       required
                       disabled={isLoading}
+                      className="h-9 sm:h-10 text-sm"
                     />
                   </div>
                   {error && (
@@ -120,17 +135,17 @@ const Auth = () => {
                       <AlertDescription>{error}</AlertDescription>
                     </Alert>
                   )}
-                  <Button type="submit" className="w-full" disabled={isLoading}>
-                    {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  <Button type="submit" className="w-full h-9 sm:h-10 text-sm" disabled={isLoading}>
+                    {isLoading && <Loader2 className="mr-2 h-3 w-3 sm:h-4 sm:w-4 animate-spin" />}
                     Sign In
                   </Button>
                 </form>
               </TabsContent>
 
-              <TabsContent value="signup" className="space-y-4">
-                <form onSubmit={handleSignUp} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-name">Full Name</Label>
+              <TabsContent value="signup" className="space-y-3 sm:space-y-4 mt-4 sm:mt-6">
+                <form onSubmit={handleSignUp} className="space-y-3 sm:space-y-4">
+                  <div className="space-y-1 sm:space-y-2">
+                    <Label htmlFor="signup-name" className="text-sm">Full Name</Label>
                     <Input
                       id="signup-name"
                       name="fullName"
@@ -138,10 +153,11 @@ const Auth = () => {
                       placeholder="Your full name"
                       required
                       disabled={isLoading}
+                      className="h-9 sm:h-10 text-sm"
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-email">Email</Label>
+                  <div className="space-y-1 sm:space-y-2">
+                    <Label htmlFor="signup-email" className="text-sm">Email</Label>
                     <Input
                       id="signup-email"
                       name="email"
@@ -149,19 +165,21 @@ const Auth = () => {
                       placeholder="your@email.com"
                       required
                       disabled={isLoading}
+                      className="h-9 sm:h-10 text-sm"
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-password">Password</Label>
+                  <div className="space-y-1 sm:space-y-2">
+                    <Label htmlFor="signup-password" className="text-sm">Password</Label>
                     <Input
                       id="signup-password"
                       name="password"
                       type="password"
-                      placeholder="Password"
+                      placeholder="Password (optional)"
                       disabled={isLoading}
+                      className="h-9 sm:h-10 text-sm"
                     />
-                    <p className="text-sm text-muted-foreground text-center">
-                      You’ll receive a login link via email for automatic access.
+                    <p className="text-xs sm:text-sm text-muted-foreground text-center px-2">
+                      We'll send a secure login link to your email address for instant access.
                     </p>
                   </div>
                   {error && (
@@ -169,9 +187,9 @@ const Auth = () => {
                       <AlertDescription>{error}</AlertDescription>
                     </Alert>
                   )}
-                  <Button type="submit" className="w-full" disabled={isLoading}>
-                    {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                    Sign Up
+                  <Button type="submit" className="w-full h-9 sm:h-10 text-sm" disabled={isLoading}>
+                    {isLoading && <Loader2 className="mr-2 h-3 w-3 sm:h-4 sm:w-4 animate-spin" />}
+                    Create Account
                   </Button>
                 </form>
               </TabsContent>

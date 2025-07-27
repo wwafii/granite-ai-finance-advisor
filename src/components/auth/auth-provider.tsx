@@ -59,7 +59,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const signUp = async (email: string, password: string, fullName?: string) => {
-    // Send magic link instead of password signup
+    // Send magic link for sign up
     const redirectUrl = `${window.location.origin}/`;
     
     const { error } = await supabase.auth.signInWithOtp({
@@ -71,6 +71,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
       }
     });
+
+    // Handle duplicate email with more specific error message
+    if (error) {
+      if (error.message.includes('already registered') || error.message.includes('User already registered')) {
+        return { 
+          error: { 
+            message: 'This email is already registered. Please use the Sign In tab to access your account.' 
+          } 
+        };
+      }
+      return { error };
+    }
+    
     return { error };
   };
 
