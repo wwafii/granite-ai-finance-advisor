@@ -4,6 +4,8 @@ import { useAuth } from "@/components/auth/auth-provider";
 import FinancialDashboard from "@/components/financial/dashboard";
 import FinancialSummary from "@/components/financial/financial-summary";
 import UploadCSV from "@/components/financial/upload-csv";
+import { HelpModal } from "@/components/ui/help-modal";
+import { ChangePasswordModal } from "@/components/ui/change-password-modal";
 import { useNavigate } from "react-router-dom";
 import { LogOut, User } from "lucide-react";
 
@@ -17,7 +19,7 @@ interface TransactionData {
 const Index = () => {
   const [transactions, setTransactions] = useState<TransactionData[]>([]);
   const [currentView, setCurrentView] = useState<'dashboard' | 'upload' | 'summary'>('dashboard');
-  const { user, loading, signOut } = useAuth();
+  const { user, profile, loading, signOut } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -106,17 +108,23 @@ const Index = () => {
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full sm:w-auto">
                 <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">
                   <User className="h-3 w-3 sm:h-4 sm:w-4" />
-                  <span className="truncate max-w-[120px] sm:max-w-none">{user.email}</span>
+                  <span className="truncate max-w-[120px] sm:max-w-none">
+                    {profile?.full_name || user?.email?.split('@')[0] || 'User'}
+                  </span>
                 </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => signOut()}
-                  className="flex items-center gap-2 text-xs sm:text-sm w-full sm:w-auto justify-center"
-                >
-                  <LogOut className="h-3 w-3 sm:h-4 sm:w-4" />
-                  <span className="sm:inline">Sign Out</span>
-                </Button>
+                <div className="flex gap-1">
+                  <HelpModal />
+                  <ChangePasswordModal />
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => signOut()}
+                    className="flex items-center gap-2 text-xs sm:text-sm"
+                  >
+                    <LogOut className="h-3 w-3 sm:h-4 sm:w-4" />
+                    <span className="sm:inline">Sign Out</span>
+                  </Button>
+                </div>
               </div>
             </div>
           </div>

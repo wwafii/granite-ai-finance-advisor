@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Upload, TrendingUp, TrendingDown, PiggyBank, Target } from "lucide-react";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
+import { HelpModal } from "@/components/ui/help-modal";
 import UploadCSV from "./upload-csv";
 
 interface TransactionData {
@@ -22,7 +23,7 @@ const FinancialDashboard = ({ onDataUpload }: FinancialDashboardProps) => {
         {/* Header with Theme Toggle */}
         <div className="text-center space-y-4 sm:space-y-6">
           <div className="flex items-center justify-between mb-4 sm:mb-8">
-            <div></div>
+            <HelpModal />
             <ThemeToggle />
           </div>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
