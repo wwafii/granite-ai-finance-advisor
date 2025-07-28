@@ -228,33 +228,33 @@ const UploadCSV = ({ onDataUpload }: UploadCSVProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-secondary/20 p-6">
-      <div className="max-w-4xl mx-auto space-y-8">
+    <div className="min-h-screen bg-gradient-to-br from-background to-secondary/20 p-2 sm:p-4 lg:p-6">
+      <div className="max-w-4xl mx-auto space-y-4 sm:space-y-6 lg:space-y-8">
         {/* Header with Branding */}
-        <div className="text-center space-y-4">
-          <div className="flex items-center justify-center gap-3">
-            <div className="w-12 h-12 bg-gradient-to-r from-primary to-success rounded-xl flex items-center justify-center shadow-lg">
-              <span className="text-white font-bold text-xl">C</span>
+        <div className="text-center space-y-2 sm:space-y-4">
+          <div className="flex items-center justify-center gap-2 sm:gap-3">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-gradient-to-r from-primary to-success rounded-xl flex items-center justify-center shadow-lg">
+              <span className="text-white font-bold text-sm sm:text-lg lg:text-xl">C</span>
             </div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-success bg-clip-text text-transparent">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-primary to-success bg-clip-text text-transparent">
               Casha
             </h1>
           </div>
-          <h2 className="text-2xl font-semibold text-foreground">Upload Financial Data</h2>
-          <p className="text-muted-foreground text-lg">
+          <h2 className="text-lg sm:text-xl lg:text-2xl font-semibold text-foreground">Upload Financial Data</h2>
+          <p className="text-muted-foreground text-sm sm:text-base lg:text-lg px-2">
             Upload your transaction data to start your financial analysis
           </p>
         </div>
 
         <Card className="border-0 shadow-xl bg-gradient-to-br from-card to-card/50 backdrop-blur-sm">
-          <CardHeader className="text-center">
-            <CardTitle className="text-2xl font-bold text-foreground">Import Your Data</CardTitle>
-            <p className="text-muted-foreground">Support for CSV and Excel files</p>
+          <CardHeader className="text-center px-3 sm:px-6">
+            <CardTitle className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground">Import Your Data</CardTitle>
+            <p className="text-muted-foreground text-sm sm:text-base">Support for CSV and Excel files</p>
           </CardHeader>
-          <CardContent className="space-y-8">
+          <CardContent className="space-y-4 sm:space-y-6 lg:space-y-8 px-3 sm:px-6">
             {!uploadedFile ? (
               <div
-                className={`border-2 border-dashed rounded-xl p-16 text-center transition-all duration-300 ${
+                className={`border-2 border-dashed rounded-xl p-6 sm:p-12 lg:p-16 text-center transition-all duration-300 ${
                   isDragging 
                     ? 'border-primary bg-gradient-to-br from-primary/20 to-success/20 scale-105' 
                     : 'border-primary/30 bg-gradient-to-br from-primary/5 to-success/5 hover:from-primary/10 hover:to-success/10'
@@ -263,19 +263,19 @@ const UploadCSV = ({ onDataUpload }: UploadCSVProps) => {
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
               >
-                <Upload className="h-20 w-20 mx-auto mb-6 text-primary drop-shadow-sm" />
-                <h3 className="text-2xl font-semibold mb-4 text-foreground">
+                <Upload className="h-12 w-12 sm:h-16 sm:w-16 lg:h-20 lg:w-20 mx-auto mb-3 sm:mb-4 lg:mb-6 text-primary drop-shadow-sm" />
+                <h3 className="text-lg sm:text-xl lg:text-2xl font-semibold mb-2 sm:mb-3 lg:mb-4 text-foreground">
                   Drag & Drop Your Files Here
                 </h3>
-                <p className="text-muted-foreground mb-6 text-lg">
+                <p className="text-muted-foreground mb-4 sm:mb-5 lg:mb-6 text-sm sm:text-base lg:text-lg px-2">
                   or click the button below to select files
                 </p>
                 <Button 
                   onClick={() => fileInputRef.current?.click()}
-                  size="lg" 
-                  className="bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90 shadow-lg hover:shadow-xl transition-all duration-300 text-lg px-8 py-3"
+                  size={window.innerWidth < 640 ? "default" : "lg"}
+                  className="bg-gradient-to-r from-primary to-success hover:from-primary/90 hover:to-success/90 shadow-lg hover:shadow-xl transition-all duration-300 text-sm sm:text-base lg:text-lg px-4 sm:px-6 lg:px-8 py-2 sm:py-2.5 lg:py-3"
                 >
-                  <Upload className="mr-3 h-6 w-6" />
+                  <Upload className="mr-2 sm:mr-3 h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6" />
                   Select Files
                 </Button>
                 <input
@@ -329,7 +329,7 @@ const UploadCSV = ({ onDataUpload }: UploadCSVProps) => {
             )}
             
             {/* File Format Guide */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 lg:gap-6">
               <div className="bg-gradient-to-br from-primary/5 to-primary/10 p-6 rounded-xl border border-primary/20">
                 <div className="flex items-center gap-3 mb-3">
                   <FileText className="h-6 w-6 text-primary" />

@@ -53,44 +53,44 @@ const FinancialSummary = ({ transactions }: FinancialSummaryProps) => {
         <ThemeToggle />
       </div>
       {/* Main Financial Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
         <Card className="border-0 shadow-lg bg-gradient-to-r from-income to-success">
-          <CardContent className="p-6 text-center">
-            <TrendingUp className="h-12 w-12 mx-auto mb-3 text-income-foreground" />
-            <h3 className="text-2xl font-bold text-income-foreground">
+          <CardContent className="p-3 sm:p-4 lg:p-6 text-center">
+            <TrendingUp className="h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 mx-auto mb-2 sm:mb-3 text-income-foreground" />
+            <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-income-foreground">
               {formatCurrency(totalIncome, currency)}
             </h3>
-            <p className="text-income-foreground/80">Total Income</p>
+            <p className="text-xs sm:text-sm lg:text-base text-income-foreground/80">Total Income</p>
           </CardContent>
         </Card>
 
         <Card className="border-0 shadow-lg bg-gradient-to-r from-expense to-destructive">
-          <CardContent className="p-6 text-center">
-            <TrendingDown className="h-12 w-12 mx-auto mb-3 text-expense-foreground" />
-            <h3 className="text-2xl font-bold text-expense-foreground">
+          <CardContent className="p-3 sm:p-4 lg:p-6 text-center">
+            <TrendingDown className="h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 mx-auto mb-2 sm:mb-3 text-expense-foreground" />
+            <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-expense-foreground">
               {formatCurrency(totalExpenses, currency)}
             </h3>
-            <p className="text-expense-foreground/80">Total Expenses</p>
+            <p className="text-xs sm:text-sm lg:text-base text-expense-foreground/80">Total Expenses</p>
           </CardContent>
         </Card>
 
         <Card className="border-0 shadow-lg bg-gradient-to-r from-primary to-primary/80">
-          <CardContent className="p-6 text-center">
-            <PiggyBank className="h-12 w-12 mx-auto mb-3 text-primary-foreground" />
-            <h3 className="text-2xl font-bold text-primary-foreground">
+          <CardContent className="p-3 sm:p-4 lg:p-6 text-center">
+            <PiggyBank className="h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 mx-auto mb-2 sm:mb-3 text-primary-foreground" />
+            <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-primary-foreground">
               {formatCurrency(netSavings, currency)}
             </h3>
-            <p className="text-primary-foreground/80">Net Savings</p>
+            <p className="text-xs sm:text-sm lg:text-base text-primary-foreground/80">Net Savings</p>
           </CardContent>
         </Card>
 
         <Card className="border-0 shadow-lg bg-gradient-to-r from-warning to-warning/80">
-          <CardContent className="p-6 text-center">
-            <AlertTriangle className="h-12 w-12 mx-auto mb-3 text-warning-foreground" />
-            <h3 className="text-2xl font-bold text-warning-foreground">
+          <CardContent className="p-3 sm:p-4 lg:p-6 text-center">
+            <AlertTriangle className="h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 mx-auto mb-2 sm:mb-3 text-warning-foreground" />
+            <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-warning-foreground">
               {savingsRate.toFixed(1)}%
             </h3>
-            <p className="text-warning-foreground/80">Savings Rate</p>
+            <p className="text-xs sm:text-sm lg:text-base text-warning-foreground/80">Savings Rate</p>
           </CardContent>
         </Card>
       </div>

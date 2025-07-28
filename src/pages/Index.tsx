@@ -6,6 +6,7 @@ import FinancialSummary from "@/components/financial/financial-summary";
 import UploadCSV from "@/components/financial/upload-csv";
 import { HelpModal } from "@/components/ui/help-modal";
 import { ChangePasswordModal } from "@/components/ui/change-password-modal";
+import { DeleteAccountModal } from "@/components/ui/delete-account-modal";
 import { useNavigate } from "react-router-dom";
 import { LogOut, User } from "lucide-react";
 
@@ -115,6 +116,7 @@ const Index = () => {
                 <div className="flex gap-1">
                   <HelpModal />
                   <ChangePasswordModal />
+                  <DeleteAccountModal />
                   <Button
                     variant="ghost"
                     size="sm"
