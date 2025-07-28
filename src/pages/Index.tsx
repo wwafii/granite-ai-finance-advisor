@@ -40,21 +40,21 @@ const Index = () => {
         return <UploadCSV onDataUpload={handleDataUpload} />;
       case 'summary':
         return (
-          <div className="min-h-screen bg-gradient-to-br from-background to-secondary/20 p-2 sm:p-6">
-            <div className="max-w-7xl mx-auto space-y-4 sm:space-y-8">
-              <div className="text-center space-y-2 sm:space-y-4">
-                <div className="flex items-center justify-center gap-2 sm:gap-3 mb-2 sm:mb-4">
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-primary to-success rounded-lg flex items-center justify-center">
-                    <span className="text-white font-bold text-sm sm:text-lg">C</span>
+          <div className="min-h-screen bg-gradient-to-br from-background to-secondary/20 p-4 sm:p-6 lg:p-8">
+            <div className="max-w-7xl mx-auto space-y-6 sm:space-y-8 lg:space-y-12">
+              <div className="text-center space-y-4 sm:space-y-6 lg:space-y-8">
+                <div className="flex items-center justify-center gap-3 sm:gap-4 lg:gap-6 mb-4 sm:mb-6 lg:mb-8">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 lg:w-16 lg:h-16 bg-gradient-to-r from-primary to-success rounded-lg flex items-center justify-center shadow-lg">
+                    <span className="text-white font-bold text-lg sm:text-xl lg:text-2xl">C</span>
                   </div>
-                  <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-r from-primary to-success bg-clip-text text-transparent">
+                  <h1 className="text-3xl sm:text-4xl lg:text-6xl xl:text-7xl font-bold bg-gradient-to-r from-primary to-success bg-clip-text text-transparent">
                     Casha
                   </h1>
                 </div>
-                <h2 className="text-lg sm:text-2xl font-semibold text-foreground">
+                <h2 className="text-xl sm:text-2xl lg:text-4xl xl:text-5xl font-semibold text-foreground">
                   Your Financial Analysis
                 </h2>
-                <p className="text-muted-foreground text-sm sm:text-lg px-4">
+                <p className="text-muted-foreground text-base sm:text-lg lg:text-xl xl:text-2xl px-4 max-w-4xl mx-auto">
                   Here's your financial summary and insights from your transaction data
                 </p>
               </div>
@@ -81,18 +81,18 @@ const Index = () => {
 
   return (
       <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background">
-        <nav className="p-2 sm:p-4 border-b bg-background/80 backdrop-blur-sm">
-          <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-4">
-            <h1 className="text-lg sm:text-2xl font-bold bg-gradient-to-r from-primary to-success bg-clip-text text-transparent">
+        <nav className="p-4 sm:p-6 lg:p-8 border-b bg-background/80 backdrop-blur-sm">
+          <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-6 lg:gap-8">
+            <h1 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold bg-gradient-to-r from-primary to-success bg-clip-text text-transparent">
               Finance Advisor
             </h1>
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 w-full sm:w-auto">
-              <div className="flex gap-1 sm:gap-2 w-full sm:w-auto">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 lg:gap-8 w-full sm:w-auto">
+              <div className="flex gap-2 sm:gap-3 lg:gap-4 w-full sm:w-auto">
                 <Button
                   variant={currentView === 'dashboard' ? 'default' : 'outline'}
                   onClick={() => setCurrentView('dashboard')}
                   size="sm"
-                  className="flex-1 sm:flex-none text-xs sm:text-sm"
+                  className="flex-1 sm:flex-none text-sm sm:text-base lg:text-lg lg:px-6 lg:py-3"
                 >
                   Dashboard
                 </Button>
@@ -101,19 +101,19 @@ const Index = () => {
                   onClick={() => setCurrentView('summary')}
                   size="sm"
                   disabled={transactions.length === 0}
-                  className="flex-1 sm:flex-none text-xs sm:text-sm"
+                  className="flex-1 sm:flex-none text-sm sm:text-base lg:text-lg lg:px-6 lg:py-3"
                 >
                   Analysis
                 </Button>
               </div>
-              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full sm:w-auto">
-                <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">
-                  <User className="h-3 w-3 sm:h-4 sm:w-4" />
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 lg:gap-6 w-full sm:w-auto">
+                <div className="flex items-center gap-2 sm:gap-3 text-sm sm:text-base lg:text-lg text-muted-foreground">
+                  <User className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6" />
                   <span className="truncate max-w-[120px] sm:max-w-none">
                     {profile?.full_name || user?.email?.split('@')[0] || 'User'}
                   </span>
                 </div>
-                <div className="flex gap-1">
+                <div className="flex gap-2 sm:gap-3 lg:gap-4">
                   <HelpModal />
                   <ChangePasswordModal />
                   <DeleteAccountModal />
@@ -121,9 +121,9 @@ const Index = () => {
                     variant="ghost"
                     size="sm"
                     onClick={() => signOut()}
-                    className="flex items-center gap-2 text-xs sm:text-sm"
+                    className="flex items-center gap-2 text-sm sm:text-base lg:text-lg lg:px-4 lg:py-2"
                   >
-                    <LogOut className="h-3 w-3 sm:h-4 sm:w-4" />
+                    <LogOut className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6" />
                     <span className="sm:inline">Sign Out</span>
                   </Button>
                 </div>
@@ -132,7 +132,7 @@ const Index = () => {
           </div>
         </nav>
 
-        <div className="container mx-auto p-2 sm:p-6">
+        <div className="container mx-auto p-4 sm:p-6 lg:p-8 xl:p-12">
           {renderView()}
         </div>
 
@@ -140,10 +140,10 @@ const Index = () => {
         {currentView === 'dashboard' && (
           <Button
             onClick={() => setCurrentView('upload')}
-            className="fixed bottom-4 right-4 sm:bottom-8 sm:right-8 bg-gradient-to-r from-primary to-success shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 rounded-full p-3 sm:p-4"
+            className="fixed bottom-6 right-6 sm:bottom-8 sm:right-8 lg:bottom-12 lg:right-12 bg-gradient-to-r from-primary to-success shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 rounded-full p-4 sm:p-5 lg:p-6"
             aria-label="Upload Financial Data"
           >
-            <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
             </svg>
           </Button>
