@@ -9,10 +9,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2, ArrowLeft } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 const Auth = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
   const { signIn, signUp } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -73,6 +75,35 @@ const Auth = () => {
     setIsLoading(false);
   };
 
+  const handleForgotPassword = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError(null);
+
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get('email') as string;
+
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/auth`,
+    });
+
+    if (error) {
+      setError(error.message);
+      toast({
+        title: "Reset failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Reset link sent!",
+        description: "Check your email for the password reset link.",
+      });
+      setShowForgotPassword(false);
+    }
+    setIsLoading(false);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/50 flex items-center justify-center p-2 sm:p-4">
       <div className="w-full max-w-sm sm:max-w-md space-y-4 sm:space-y-6">
@@ -125,6 +156,15 @@ const Auth = () => {
                   <Button type="submit" className="w-full h-9 sm:h-10 text-sm" disabled={isLoading}>
                     {isLoading && <Loader2 className="mr-2 h-3 w-3 sm:h-4 sm:w-4 animate-spin" />}
                     Sign In
+                  </Button>
+                  <Button 
+                    type="button" 
+                    variant="ghost" 
+                    className="w-full h-8 text-xs sm:text-sm text-muted-foreground hover:text-foreground" 
+                    onClick={() => setShowForgotPassword(true)}
+                    disabled={isLoading}
+                  >
+                    Forgot Password?
                   </Button>
                 </form>
               </TabsContent>
@@ -183,6 +223,50 @@ const Auth = () => {
             </Tabs>
           </CardContent>
         </Card>
+
+        {showForgotPassword && (
+          <Card className="border-0 shadow-lg">
+            <CardHeader className="text-center px-4 sm:px-6 py-4 sm:py-6">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="absolute left-2 top-2 h-8 w-8 p-0"
+                onClick={() => setShowForgotPassword(false)}
+              >
+                <ArrowLeft className="h-4 w-4" />
+              </Button>
+              <CardTitle className="text-xl sm:text-2xl font-bold">Reset Password</CardTitle>
+              <CardDescription className="text-sm sm:text-base">
+                Enter your email to receive a password reset link
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="px-4 sm:px-6 pb-4 sm:pb-6">
+              <form onSubmit={handleForgotPassword} className="space-y-3 sm:space-y-4">
+                <div className="space-y-1 sm:space-y-2">
+                  <Label htmlFor="reset-email" className="text-sm">Email</Label>
+                  <Input
+                    id="reset-email"
+                    name="email"
+                    type="email"
+                    placeholder="your@email.com"
+                    required
+                    disabled={isLoading}
+                    className="h-9 sm:h-10 text-sm"
+                  />
+                </div>
+                {error && (
+                  <Alert variant="destructive">
+                    <AlertDescription>{error}</AlertDescription>
+                  </Alert>
+                )}
+                <Button type="submit" className="w-full h-9 sm:h-10 text-sm" disabled={isLoading}>
+                  {isLoading && <Loader2 className="mr-2 h-3 w-3 sm:h-4 sm:w-4 animate-spin" />}
+                  Send Reset Link
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </div>
   );
