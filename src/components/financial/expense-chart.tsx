@@ -73,14 +73,14 @@ export const ExpenseChart = ({ transactions, currency }: ExpenseChartProps) => {
   };
 
   return (
-    <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 sm:gap-8 lg:gap-12">
+    <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 lg:gap-12">
       {/* Pie Chart - Category Breakdown */}
-      <Card className="border-0 shadow-lg">
-        <CardHeader className="pb-4 sm:pb-6 lg:pb-8">
-          <CardTitle className="text-xl sm:text-2xl lg:text-3xl">Expenses by Category</CardTitle>
+      <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow">
+        <CardHeader className="pb-6">
+          <CardTitle className="text-xl lg:text-2xl">Expenses by Category</CardTitle>
         </CardHeader>
-        <CardContent className="p-4 sm:p-6 lg:p-8">
-          <div className="h-80 sm:h-96 lg:h-[400px] xl:h-[450px]">
+        <CardContent className="p-6">
+          <div className="h-[400px] lg:h-[450px]">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
@@ -93,8 +93,8 @@ export const ExpenseChart = ({ transactions, currency }: ExpenseChartProps) => {
                     window.innerWidth < 1024 ? `${name.length > 8 ? name.substring(0, 8) + '...' : name} ${percentage}%` :
                     `${name} ${percentage}%`
                   }
-                  outerRadius={window.innerWidth < 640 ? 60 : window.innerWidth < 1024 ? 80 : 100}
-                  innerRadius={window.innerWidth < 640 ? 20 : 0}
+                  outerRadius="65%"
+                  innerRadius={0}
                   fill="#8884d8"
                   dataKey="value"
                 >
@@ -104,8 +104,8 @@ export const ExpenseChart = ({ transactions, currency }: ExpenseChartProps) => {
                 </Pie>
                 <Tooltip content={<CustomTooltip />} />
                 <Legend 
-                  wrapperStyle={{ fontSize: window.innerWidth < 640 ? '12px' : window.innerWidth < 1024 ? '14px' : '16px' }}
-                  iconSize={window.innerWidth < 640 ? 12 : window.innerWidth < 1024 ? 16 : 20}
+                  wrapperStyle={{ fontSize: '14px', paddingTop: '20px' }}
+                  iconSize={16}
                 />
               </PieChart>
             </ResponsiveContainer>
@@ -114,42 +114,36 @@ export const ExpenseChart = ({ transactions, currency }: ExpenseChartProps) => {
       </Card>
 
       {/* Bar Chart - Monthly Trend */}
-      <Card className="border-0 shadow-lg">
-        <CardHeader className="pb-4 sm:pb-6 lg:pb-8">
-          <CardTitle className="text-xl sm:text-2xl lg:text-3xl">Monthly Spending Trend</CardTitle>
+      <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow">
+        <CardHeader className="pb-6">
+          <CardTitle className="text-xl lg:text-2xl">Monthly Spending Trend</CardTitle>
         </CardHeader>
-        <CardContent className="p-4 sm:p-6 lg:p-8">
-          <div className="h-80 sm:h-96 lg:h-[400px] xl:h-[450px]">
+        <CardContent className="p-6">
+          <div className="h-[400px] lg:h-[450px]">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={barData} margin={{ top: 10, right: 10, left: 10, bottom: 10 }}>
+              <BarChart data={barData} margin={{ top: 20, right: 30, left: 40, bottom: 40 }}>
                 <defs>
                   <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.8}/>
-                    <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0.3}/>
+                    <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.9}/>
+                    <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0.4}/>
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" className="stroke-muted/50" />
+                <CartesianGrid strokeDasharray="3 3" className="stroke-muted/30" />
                 <XAxis 
                   dataKey="month" 
                   className="text-muted-foreground"
-                  fontSize={window.innerWidth < 640 ? 10 : window.innerWidth < 1024 ? 12 : 14}
-                  tick={{ fontSize: window.innerWidth < 640 ? 10 : window.innerWidth < 1024 ? 12 : 14 }}
-                  angle={window.innerWidth < 640 ? -45 : 0}
-                  textAnchor={window.innerWidth < 640 ? 'end' : 'middle'}
-                  height={window.innerWidth < 640 ? 60 : 40}
+                  fontSize={14}
+                  tick={{ fontSize: 14 }}
+                  angle={0}
+                  textAnchor="middle"
+                  height={60}
                 />
                 <YAxis 
                   className="text-muted-foreground"
-                  fontSize={window.innerWidth < 640 ? 10 : window.innerWidth < 1024 ? 12 : 14}
-                  tick={{ fontSize: window.innerWidth < 640 ? 10 : window.innerWidth < 1024 ? 12 : 14 }}
-                  tickFormatter={(value) => 
-                    window.innerWidth < 640 
-                      ? formatCurrency(value, currency).replace(/\.\d+/, '').replace(/,.*/, 'K')
-                      : window.innerWidth < 1024
-                      ? formatCurrency(value, currency).replace(/\.\d+/, '')
-                      : formatCurrency(value, currency)
-                  }
-                  width={window.innerWidth < 640 ? 50 : window.innerWidth < 1024 ? 70 : 80}
+                  fontSize={14}
+                  tick={{ fontSize: 14 }}
+                  tickFormatter={(value) => formatCurrency(value, currency).replace(/\.\d+/, '')}
+                  width={90}
                 />
                 <Tooltip content={<CustomTooltip />} />
                 <Bar 

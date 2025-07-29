@@ -81,50 +81,47 @@ const Index = () => {
 
   return (
       <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background">
-        <nav className="p-4 sm:p-6 lg:p-8 border-b bg-background/80 backdrop-blur-sm">
-          <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-6 lg:gap-8">
-            <h1 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold bg-gradient-to-r from-primary to-success bg-clip-text text-transparent">
+        <nav className="px-6 py-4 lg:px-8 lg:py-6 border-b bg-background/80 backdrop-blur-sm">
+          <div className="max-w-7xl mx-auto flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+            <h1 className="text-2xl lg:text-3xl xl:text-4xl font-bold bg-gradient-to-r from-primary to-success bg-clip-text text-transparent">
               Finance Advisor
             </h1>
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 lg:gap-8 w-full sm:w-auto">
-              <div className="flex gap-2 sm:gap-3 lg:gap-4 w-full sm:w-auto">
+            <div className="flex flex-col lg:flex-row items-start lg:items-center gap-6 w-full lg:w-auto">
+              <div className="flex gap-3 w-full lg:w-auto">
                 <Button
                   variant={currentView === 'dashboard' ? 'default' : 'outline'}
                   onClick={() => setCurrentView('dashboard')}
-                  size="sm"
-                  className="flex-1 sm:flex-none text-sm sm:text-base lg:text-lg lg:px-6 lg:py-3"
+                  className="flex-1 lg:flex-none text-base lg:px-8 lg:py-3"
                 >
                   Dashboard
                 </Button>
                 <Button
                   variant={currentView === 'summary' ? 'default' : 'outline'}
                   onClick={() => setCurrentView('summary')}
-                  size="sm"
                   disabled={transactions.length === 0}
-                  className="flex-1 sm:flex-none text-sm sm:text-base lg:text-lg lg:px-6 lg:py-3"
+                  className="flex-1 lg:flex-none text-base lg:px-8 lg:py-3"
                 >
                   Analysis
                 </Button>
               </div>
-              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 lg:gap-6 w-full sm:w-auto">
-                <div className="flex items-center gap-2 sm:gap-3 text-sm sm:text-base lg:text-lg text-muted-foreground">
-                  <User className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6" />
-                  <span className="truncate max-w-[120px] sm:max-w-none">
+              <div className="flex flex-col lg:flex-row items-start lg:items-center gap-4 w-full lg:w-auto">
+                <div className="flex items-center gap-3 text-base text-muted-foreground">
+                  <User className="h-5 w-5" />
+                  <span className="truncate">
                     {profile?.full_name || user?.email?.split('@')[0] || 'User'}
                   </span>
                 </div>
-                <div className="flex gap-2 sm:gap-3 lg:gap-4">
+                <div className="flex gap-3">
                   <HelpModal />
                   <ChangePasswordModal />
                   <DeleteAccountModal />
                   <Button
                     variant="ghost"
-                    size="sm"
                     onClick={() => signOut()}
-                    className="flex items-center gap-2 text-sm sm:text-base lg:text-lg lg:px-4 lg:py-2"
+                    className="flex items-center gap-2 text-base px-6 py-2"
                   >
-                    <LogOut className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6" />
-                    <span className="sm:inline">Sign Out</span>
+                    <LogOut className="h-5 w-5" />
+                    <span>Sign Out</span>
                   </Button>
                 </div>
               </div>
@@ -132,7 +129,7 @@ const Index = () => {
           </div>
         </nav>
 
-        <div className="container mx-auto p-4 sm:p-6 lg:p-8 xl:p-12">
+        <div className="max-w-7xl mx-auto px-6 py-8 lg:px-8 lg:py-12">
           {renderView()}
         </div>
 

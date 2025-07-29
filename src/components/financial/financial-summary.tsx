@@ -47,67 +47,67 @@ const FinancialSummary = ({ transactions }: FinancialSummaryProps) => {
 
 
   return (
-    <div className="space-y-6 sm:space-y-8 lg:space-y-12">
+    <div className="space-y-8 lg:space-y-12">
       {/* Theme Toggle Header */}
-      <div className="flex justify-end mb-6 lg:mb-8">
+      <div className="flex justify-end">
         <ThemeToggle />
       </div>
       {/* Main Financial Metrics */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
-        <Card className="border-0 shadow-lg bg-gradient-to-r from-income to-success">
-          <CardContent className="p-4 sm:p-6 lg:p-8 text-center">
-            <TrendingUp className="h-10 w-10 sm:h-12 sm:w-12 lg:h-16 lg:w-16 mx-auto mb-3 sm:mb-4 lg:mb-6 text-income-foreground" />
-            <h3 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold text-income-foreground">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 lg:gap-8">
+        <Card className="border-0 shadow-lg bg-gradient-to-r from-income to-success hover:shadow-xl transition-shadow">
+          <CardContent className="p-6 lg:p-8 text-center">
+            <TrendingUp className="h-12 lg:h-14 w-12 lg:w-14 mx-auto mb-4 lg:mb-6 text-income-foreground" />
+            <h3 className="text-2xl lg:text-3xl font-bold text-income-foreground">
               {formatCurrency(totalIncome, currency)}
             </h3>
-            <p className="text-sm sm:text-base lg:text-lg xl:text-xl text-income-foreground/80">Total Income</p>
+            <p className="text-base lg:text-lg text-income-foreground/80 mt-2">Total Income</p>
           </CardContent>
         </Card>
 
-        <Card className="border-0 shadow-lg bg-gradient-to-r from-expense to-destructive">
-          <CardContent className="p-4 sm:p-6 lg:p-8 text-center">
-            <TrendingDown className="h-10 w-10 sm:h-12 sm:w-12 lg:h-16 lg:w-16 mx-auto mb-3 sm:mb-4 lg:mb-6 text-expense-foreground" />
-            <h3 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold text-expense-foreground">
+        <Card className="border-0 shadow-lg bg-gradient-to-r from-expense to-destructive hover:shadow-xl transition-shadow">
+          <CardContent className="p-6 lg:p-8 text-center">
+            <TrendingDown className="h-12 lg:h-14 w-12 lg:w-14 mx-auto mb-4 lg:mb-6 text-expense-foreground" />
+            <h3 className="text-2xl lg:text-3xl font-bold text-expense-foreground">
               {formatCurrency(totalExpenses, currency)}
             </h3>
-            <p className="text-sm sm:text-base lg:text-lg xl:text-xl text-expense-foreground/80">Total Expenses</p>
+            <p className="text-base lg:text-lg text-expense-foreground/80 mt-2">Total Expenses</p>
           </CardContent>
         </Card>
 
-        <Card className="border-0 shadow-lg bg-gradient-to-r from-primary to-primary/80">
-          <CardContent className="p-4 sm:p-6 lg:p-8 text-center">
-            <PiggyBank className="h-10 w-10 sm:h-12 sm:w-12 lg:h-16 lg:w-16 mx-auto mb-3 sm:mb-4 lg:mb-6 text-primary-foreground" />
-            <h3 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold text-primary-foreground">
+        <Card className="border-0 shadow-lg bg-gradient-to-r from-primary to-primary/80 hover:shadow-xl transition-shadow">
+          <CardContent className="p-6 lg:p-8 text-center">
+            <PiggyBank className="h-12 lg:h-14 w-12 lg:w-14 mx-auto mb-4 lg:mb-6 text-primary-foreground" />
+            <h3 className="text-2xl lg:text-3xl font-bold text-primary-foreground">
               {formatCurrency(netSavings, currency)}
             </h3>
-            <p className="text-sm sm:text-base lg:text-lg xl:text-xl text-primary-foreground/80">Net Savings</p>
+            <p className="text-base lg:text-lg text-primary-foreground/80 mt-2">Net Savings</p>
           </CardContent>
         </Card>
 
-        <Card className="border-0 shadow-lg bg-gradient-to-r from-warning to-warning/80">
-          <CardContent className="p-4 sm:p-6 lg:p-8 text-center">
-            <AlertTriangle className="h-10 w-10 sm:h-12 sm:w-12 lg:h-16 lg:w-16 mx-auto mb-3 sm:mb-4 lg:mb-6 text-warning-foreground" />
-            <h3 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold text-warning-foreground">
+        <Card className="border-0 shadow-lg bg-gradient-to-r from-warning to-warning/80 hover:shadow-xl transition-shadow">
+          <CardContent className="p-6 lg:p-8 text-center">
+            <AlertTriangle className="h-12 lg:h-14 w-12 lg:w-14 mx-auto mb-4 lg:mb-6 text-warning-foreground" />
+            <h3 className="text-2xl lg:text-3xl font-bold text-warning-foreground">
               {savingsRate.toFixed(1)}%
             </h3>
-            <p className="text-sm sm:text-base lg:text-lg xl:text-xl text-warning-foreground/80">Savings Rate</p>
+            <p className="text-base lg:text-lg text-warning-foreground/80 mt-2">Savings Rate</p>
           </CardContent>
         </Card>
       </div>
 
       {/* Savings Rate Progress */}
-      <Card className="border-0 shadow-lg">
-        <CardHeader>
-          <CardTitle>Savings Rate Analysis</CardTitle>
+      <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow">
+        <CardHeader className="pb-6">
+          <CardTitle className="text-xl lg:text-2xl">Savings Rate Analysis</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-6">
           <div className="space-y-4">
-            <div className="flex justify-between text-sm">
-              <span>Your savings progress</span>
-              <span>{savingsRate.toFixed(1)}%</span>
+            <div className="flex justify-between text-base lg:text-lg">
+              <span className="font-medium">Your savings progress</span>
+              <span className="font-bold">{savingsRate.toFixed(1)}%</span>
             </div>
-            <Progress value={Math.max(0, Math.min(100, savingsRate))} className="h-3" />
-            <div className="flex justify-between text-xs text-muted-foreground">
+            <Progress value={Math.max(0, Math.min(100, savingsRate))} className="h-4" />
+            <div className="flex justify-between text-sm text-muted-foreground">
               <span>Minimum target: 20%</span>
               <span>Ideal target: 30%</span>
             </div>
