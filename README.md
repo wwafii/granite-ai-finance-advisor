@@ -2,9 +2,6 @@
 
 A modern, intelligent financial analysis platform that provides comprehensive insights into your spending patterns, budget optimization, and savings recommendations using advanced AI technology.
 
-## Project Info
-
-**URL**: https://lovable.dev/projects/9f04356e-5001-467f-afbb-fb8fd7fc80ac
 
 ## Description
 
@@ -125,35 +122,23 @@ Casha leverages cutting-edge AI technology to provide intelligent financial insi
 - **Error Recovery**: Intelligent handling of malformed or incomplete data
 - **Format Flexibility**: Supports various CSV and Excel formats without strict requirements
 
-## How can I edit this code?
+## Development
 
-There are several ways of editing your application.
-
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/9f04356e-5001-467f-afbb-fb8fd7fc80ac) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+To work on this project locally, you'll need Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 
 Follow these steps:
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
+# Step 1: Clone the repository
 git clone <YOUR_GIT_URL>
 
-# Step 2: Navigate to the project directory.
+# Step 2: Navigate to the project directory
 cd <YOUR_PROJECT_NAME>
 
-# Step 3: Install the necessary dependencies.
-npm i
+# Step 3: Install the necessary dependencies
+npm install
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Step 4: Start the development server
 npm run dev
 ```
 
@@ -167,14 +152,18 @@ This project is built with:
 - shadcn-ui
 - Tailwind CSS
 
-## How can I deploy this project?
+## Deployment
 
-Simply open [Lovable](https://lovable.dev/projects/9f04356e-5001-467f-afbb-fb8fd7fc80ac) and click on Share -> Publish.
+To deploy this project, you can use any modern hosting platform that supports static sites:
 
-## Can I connect a custom domain to my Lovable project?
+- **Vercel**: Connect your Git repository for automatic deployments
+- **Netlify**: Drag and drop your build folder or connect via Git
+- **GitHub Pages**: Deploy directly from your repository
+- **Other platforms**: Any hosting service that supports React applications
 
-Yes, you can!
+Build the project first:
+```bash
+npm run build
+```
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+Then deploy the contents of the `dist` folder to your hosting platform.
