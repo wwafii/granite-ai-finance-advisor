@@ -98,32 +98,50 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const signUp = async (email: string, password: string, fullName?: string) => {
-    // Send magic link for sign up
-    const redirectUrl = `${window.location.origin}/`;
-    
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: {
-        emailRedirectTo: redirectUrl,
-        data: {
-          full_name: fullName || email
+    try {
+      // First check if user already exists by attempting sign up
+      const redirectUrl = `${window.location.origin}/`;
+      
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: redirectUrl,
+          data: {
+            full_name: fullName || email
+          }
         }
-      }
-    });
+      });
 
-    // Handle duplicate email with more specific error message
-    if (error) {
-      if (error.message.includes('already registered') || error.message.includes('User already registered')) {
+      // Handle duplicate email specifically
+      if (error) {
+        if (error.message.includes('already registered') || 
+            error.message.includes('User already registered') ||
+            error.message.includes('already been registered')) {
+          return { 
+            error: { 
+              message: 'This email is already registered. Please use the Sign In tab to access your account, or try resetting your password if you forgot it.' 
+            } 
+          };
+        }
+        return { error };
+      }
+
+      // If user exists but email not confirmed, handle gracefully
+      if (data.user && !data.session) {
         return { 
-          error: { 
-            message: 'This email is already registered. Please use the Sign In tab to access your account.' 
-          } 
+          error: null // Success - confirmation email sent
         };
       }
-      return { error };
+      
+      return { error: null };
+    } catch (err) {
+      return { 
+        error: { 
+          message: 'An unexpected error occurred. Please try again.' 
+        } 
+      };
     }
-    
-    return { error };
   };
 
   const changePassword = async (newPassword: string) => {

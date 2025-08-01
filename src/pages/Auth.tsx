@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/components/auth/auth-provider';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,9 +15,24 @@ const Auth = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [newPassword, setNewPassword] = useState('');
+  const [showNewPasswordForm, setShowNewPasswordForm] = useState(false);
   const { signIn, signUp } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    // Check if this is a password reset redirect
+    const resetParam = searchParams.get('reset');
+    if (resetParam === 'true') {
+      setShowNewPasswordForm(true);
+      toast({
+        title: "Password Reset",
+        description: "Please enter your new password below.",
+      });
+    }
+  }, [searchParams, toast]);
 
   const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -69,7 +84,7 @@ const Auth = () => {
     } else {
       toast({
         title: "Account Created Successfully!",
-        description: "We've sent a secure login link to your email. Click the link to access your financial dashboard instantly."
+        description: "We've sent a secure login link to your email. Click the link to access your Casha financial dashboard instantly."
       });
     }
     setIsLoading(false);
@@ -84,7 +99,7 @@ const Auth = () => {
     const email = formData.get('email') as string;
 
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/auth`,
+      redirectTo: `${window.location.origin}/auth?reset=true`,
     });
 
     if (error) {
@@ -100,6 +115,33 @@ const Auth = () => {
         description: "Check your email for the password reset link.",
       });
       setShowForgotPassword(false);
+    }
+    setIsLoading(false);
+  };
+
+  const handleNewPassword = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError(null);
+
+    const { error } = await supabase.auth.updateUser({
+      password: newPassword
+    });
+
+    if (error) {
+      setError(error.message);
+      toast({
+        title: "Password update failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Password Updated!",
+        description: "Your password has been successfully updated. You can now sign in with your new password.",
+      });
+      setShowNewPasswordForm(false);
+      setNewPassword('');
     }
     setIsLoading(false);
   };
@@ -205,9 +247,9 @@ const Auth = () => {
                       disabled={isLoading}
                       className="h-9 sm:h-10 text-sm"
                     />
-                    <p className="text-xs sm:text-sm text-muted-foreground text-center px-2">
-                      We'll send a secure login link to your email address  
-                    </p>
+                     <p className="text-xs sm:text-sm text-muted-foreground text-center px-2">
+                       We'll send a secure login link to your email address
+                     </p>
                   </div>
                   {error && (
                     <Alert variant="destructive">
@@ -262,6 +304,57 @@ const Auth = () => {
                 <Button type="submit" className="w-full h-9 sm:h-10 text-sm" disabled={isLoading}>
                   {isLoading && <Loader2 className="mr-2 h-3 w-3 sm:h-4 sm:w-4 animate-spin" />}
                   Send Reset Link
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+        )}
+
+        {showNewPasswordForm && (
+          <Card className="border-0 shadow-lg">
+            <CardHeader className="text-center px-4 sm:px-6 py-4 sm:py-6">
+              <CardTitle className="text-xl sm:text-2xl font-bold">Set New Password</CardTitle>
+              <CardDescription className="text-sm sm:text-base">
+                Enter your new password to complete the reset process
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="px-4 sm:px-6 pb-4 sm:pb-6">
+              <form onSubmit={handleNewPassword} className="space-y-3 sm:space-y-4">
+                <div className="space-y-1 sm:space-y-2">
+                  <Label htmlFor="new-password" className="text-sm">New Password</Label>
+                  <Input
+                    id="new-password"
+                    type="password"
+                    placeholder="Enter your new password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    required
+                    disabled={isLoading}
+                    className="h-9 sm:h-10 text-sm"
+                    minLength={6}
+                  />
+                </div>
+                {error && (
+                  <Alert variant="destructive">
+                    <AlertDescription>{error}</AlertDescription>
+                  </Alert>
+                )}
+                <Button type="submit" className="w-full h-9 sm:h-10 text-sm" disabled={isLoading}>
+                  {isLoading && <Loader2 className="mr-2 h-3 w-3 sm:h-4 sm:w-4 animate-spin" />}
+                  Update Password
+                </Button>
+                <Button 
+                  type="button" 
+                  variant="ghost" 
+                  className="w-full h-8 text-xs sm:text-sm text-muted-foreground hover:text-foreground" 
+                  onClick={() => {
+                    setShowNewPasswordForm(false);
+                    setNewPassword('');
+                    setError(null);
+                  }}
+                  disabled={isLoading}
+                >
+                  Cancel
                 </Button>
               </form>
             </CardContent>

@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Upload, FileText, X, CheckCircle, FileSpreadsheet } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { parseAmount } from "@/lib/currency";
 import * as XLSX from 'xlsx';
 
 interface TransactionData {
@@ -104,10 +105,10 @@ const UploadCSV = ({ onDataUpload }: UploadCSVProps) => {
           
           const [date, description, amount, category] = row;
           
-          // Validate amount is a number
-          const parsedAmount = typeof amount === 'number' ? amount : parseFloat(String(amount));
+          // Enhanced amount parsing with currency support
+          const parsedAmount = parseAmount(String(amount));
           if (isNaN(parsedAmount)) {
-            throw new Error(`Baris ${index + 2}: Amount harus berupa angka (${amount})`);
+            throw new Error(`Baris ${index + 2}: Amount harus berupa angka valid (${amount})`);
           }
           
           return {
@@ -161,10 +162,10 @@ const UploadCSV = ({ onDataUpload }: UploadCSVProps) => {
         
         const [date, description, amount, category] = columns;
         
-        // Validate amount is a number
-        const parsedAmount = parseFloat(amount);
+        // Enhanced amount parsing with currency support
+        const parsedAmount = parseAmount(amount);
         if (isNaN(parsedAmount)) {
-          throw new Error(`Baris ${index + 2}: Amount harus berupa angka (${amount})`);
+          throw new Error(`Baris ${index + 2}: Amount harus berupa angka valid (${amount})`);
         }
         
         return {
