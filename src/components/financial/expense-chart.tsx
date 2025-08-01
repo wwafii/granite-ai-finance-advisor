@@ -41,21 +41,25 @@ export const ExpenseChart = ({ transactions, currency }: ExpenseChartProps) => {
     .sort((a, b) => b.value - a.value)
     .slice(0, 5);
 
-  // Monthly spending trend
-  const monthlyData = transactions
+  // Daily spending data with actual dates
+  const dailyData = transactions
     .filter(t => t.amount < 0)
     .reduce((acc, t) => {
-      const month = new Date(t.date).toLocaleString('default', { month: 'short', year: '2-digit' });
-      acc[month] = (acc[month] || 0) + Math.abs(t.amount);
+      const dateKey = new Date(t.date).toISOString().split('T')[0]; // YYYY-MM-DD format
+      acc[dateKey] = (acc[dateKey] || 0) + Math.abs(t.amount);
       return acc;
     }, {} as Record<string, number>);
 
-  const barData = Object.entries(monthlyData)
-    .map(([month, amount]) => ({
-      month,
+  const barData = Object.entries(dailyData)
+    .map(([dateKey, amount]) => ({
+      date: dateKey,
+      displayDate: new Date(dateKey).toLocaleDateString('default', { 
+        month: 'short', 
+        day: 'numeric'
+      }),
       amount
     }))
-    .sort((a, b) => new Date(a.month).getTime() - new Date(b.month).getTime());
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
@@ -113,10 +117,10 @@ export const ExpenseChart = ({ transactions, currency }: ExpenseChartProps) => {
         </CardContent>
       </Card>
 
-      {/* Bar Chart - Monthly Trend */}
+      {/* Bar Chart - Daily Spending */}
       <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow">
         <CardHeader className="pb-6">
-          <CardTitle className="text-xl lg:text-2xl">Monthly Spending Trend</CardTitle>
+          <CardTitle className="text-xl lg:text-2xl">Daily Spending Pattern</CardTitle>
         </CardHeader>
         <CardContent className="p-6">
           <div className="h-[400px] lg:h-[450px]">
@@ -130,13 +134,14 @@ export const ExpenseChart = ({ transactions, currency }: ExpenseChartProps) => {
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" className="stroke-muted/30" />
                 <XAxis 
-                  dataKey="month" 
+                  dataKey="displayDate" 
                   className="text-muted-foreground"
-                  fontSize={14}
-                  tick={{ fontSize: 14 }}
-                  angle={0}
-                  textAnchor="middle"
-                  height={60}
+                  fontSize={12}
+                  tick={{ fontSize: 12 }}
+                  angle={-45}
+                  textAnchor="end"
+                  height={80}
+                  interval={Math.max(0, Math.floor(barData.length / 10))}
                 />
                 <YAxis 
                   className="text-muted-foreground"

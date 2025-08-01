@@ -47,23 +47,58 @@ serve(async (req) => {
         'Accept': 'application/json'
       },
       body: JSON.stringify({
-        input: `Analyze these financial transactions and provide intelligent insights:
+        input: `As a professional financial advisor, analyze these detailed financial transactions and provide comprehensive insights:
 
-Total Income: $${totalIncome.toFixed(2)}
-Total Expenses: $${totalExpenses.toFixed(2)}
-Categories: ${categories.join(', ')}
+FINANCIAL OVERVIEW:
+• Total Income: $${totalIncome.toFixed(2)}
+• Total Expenses: $${totalExpenses.toFixed(2)}
+• Net Savings: $${(totalIncome - totalExpenses).toFixed(2)}
+• Savings Rate: ${totalIncome > 0 ? ((totalIncome - totalExpenses) / totalIncome * 100).toFixed(1) : '0'}%
+• Active Categories: ${categories.join(', ')}
+• Transaction Count: ${transactions.length}
 
-Transaction Details:
+TRANSACTION DETAILS:
 ${transactionSummary}
 
-Please provide:
-1. Spending pattern analysis
-2. Budget optimization suggestions
-3. Potential savings opportunities
-4. Financial health assessment
-5. Anomaly detection (unusual transactions)
+Please provide a DETAILED financial analysis covering:
 
-Keep the response concise and actionable.`,
+📊 SPENDING PATTERN ANALYSIS:
+- Identify your top 3 spending categories and their percentage of total expenses
+- Analyze spending frequency and timing patterns
+- Compare spending habits across different time periods
+- Highlight any seasonal or cyclical spending trends
+
+💰 BUDGET OPTIMIZATION STRATEGIES:
+- Provide specific percentage reduction targets for overspending categories
+- Suggest realistic monthly budget allocations for each category
+- Recommend the 50/30/20 rule application to your specific situation
+- Identify categories where you can implement immediate cost-cutting measures
+
+🎯 SAVINGS OPPORTUNITIES:
+- Calculate potential monthly savings from reducing specific expenses by 10-20%
+- Identify subscriptions or recurring charges that could be eliminated
+- Suggest switching to more cost-effective alternatives for major expense categories
+- Recommend optimal savings goals based on your income level
+
+🏥 FINANCIAL HEALTH ASSESSMENT:
+- Rate your financial health on a scale of 1-10 with detailed reasoning
+- Assess your emergency fund adequacy (aim for 3-6 months of expenses)
+- Evaluate your debt-to-income ratio if applicable
+- Compare your savings rate to recommended financial benchmarks
+
+🚨 ANOMALY & RISK DETECTION:
+- Flag any unusually large transactions that deviate from normal patterns
+- Identify potential fraudulent or duplicate charges
+- Highlight categories with sudden spending spikes
+- Warn about any concerning financial trends
+
+🔮 ACTIONABLE RECOMMENDATIONS:
+- Provide 5 specific, measurable action items you can implement this month
+- Suggest apps, tools, or methods to track and improve spending habits
+- Recommend a personalized 3-month financial improvement plan
+- Set realistic short-term and long-term financial goals
+
+Format your response with clear headers, bullet points, and specific numbers. Be thorough yet practical in your recommendations.`,
         parameters: {
           decoding_method: "greedy",
           max_new_tokens: 500,
