@@ -38,18 +38,8 @@ export function DeleteAccountModal() {
     setIsDeleting(true);
 
     try {
-      // Delete user profile from our database first
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .delete()
-        .eq('id', user.id);
-
-      if (profileError) {
-        throw profileError;
-      }
-
-      // Delete the user account from Supabase Auth
-      const { error: deleteError } = await supabase.rpc('delete_user');
+      // Call the database function to delete user account
+      const { error: deleteError } = await supabase.rpc('delete_user_account');
       
       if (deleteError) {
         throw deleteError;
