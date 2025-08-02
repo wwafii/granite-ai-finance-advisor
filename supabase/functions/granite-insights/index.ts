@@ -29,82 +29,133 @@ serve(async (req) => {
       throw new Error('IBM API key not configured');
     }
 
-    // Prepare transaction summary for IBM Granite
-    const transactionSummary = transactions.map(t => 
-      `${t.date}: ${t.description} - ${t.amount} (${t.category})`
-    ).join('\n');
-
+    // Prepare detailed transaction analysis for IBM Granite
     const totalIncome = transactions.filter(t => t.amount > 0).reduce((sum, t) => sum + t.amount, 0);
     const totalExpenses = transactions.filter(t => t.amount < 0).reduce((sum, t) => sum + Math.abs(t.amount), 0);
-    const categories = [...new Set(transactions.map(t => t.category))];
+    
+    // Advanced analytics for varied insights
+    const categorySpending = transactions
+      .filter(t => t.amount < 0)
+      .reduce((acc, t) => {
+        acc[t.category] = (acc[t.category] || 0) + Math.abs(t.amount);
+        return acc;
+      }, {} as Record<string, number>);
 
-    // Call IBM Granite AI for financial insights
+    const sortedCategories = Object.entries(categorySpending)
+      .sort(([,a], [,b]) => b - a)
+      .slice(0, 5);
+
+    const transactionsByDate = transactions.reduce((acc, t) => {
+      const date = t.date.substring(0, 10);
+      if (!acc[date]) acc[date] = [];
+      acc[date].push(t);
+      return acc;
+    }, {} as Record<string, TransactionData[]>);
+
+    const avgDailySpending = totalExpenses / Object.keys(transactionsByDate).length;
+    const highSpendingDays = Object.entries(transactionsByDate)
+      .filter(([, dayTransactions]) => {
+        const dayTotal = dayTransactions.filter(t => t.amount < 0).reduce((sum, t) => sum + Math.abs(t.amount), 0);
+        return dayTotal > avgDailySpending * 1.5;
+      })
+      .map(([date, dayTransactions]) => ({
+        date,
+        amount: dayTransactions.filter(t => t.amount < 0).reduce((sum, t) => sum + Math.abs(t.amount), 0)
+      }));
+
+    const frequentMerchants = transactions
+      .filter(t => t.amount < 0)
+      .reduce((acc, t) => {
+        const merchant = t.description.split(' ')[0].toUpperCase();
+        acc[merchant] = (acc[merchant] || 0) + 1;
+        return acc;
+      }, {} as Record<string, number>);
+
+    const timeOfMonth = new Date().getDate();
+    const userPersonality = totalExpenses > totalIncome * 0.8 ? 'high-spender' : 
+                           totalExpenses < totalIncome * 0.5 ? 'conservative-saver' : 'balanced';
+
+    // Dynamic prompt based on user's financial personality and patterns
+    const dynamicPrompt = `You are IBM Granite AI, a sophisticated financial advisor AI. Analyze this REAL user's financial data with deep personalization:
+
+USER PROFILE DETECTED: ${userPersonality}
+ANALYSIS DATE: ${new Date().toLocaleDateString()}
+FINANCIAL SNAPSHOT:
+- Income: $${totalIncome.toFixed(2)}
+- Expenses: $${totalExpenses.toFixed(2)} 
+- Net Position: $${(totalIncome - totalExpenses).toFixed(2)}
+- Savings Rate: ${totalIncome > 0 ? ((totalIncome - totalExpenses) / totalIncome * 100).toFixed(1) : '0'}%
+
+TOP SPENDING CATEGORIES:
+${sortedCategories.map(([cat, amount], i) => 
+  `${i+1}. ${cat}: $${amount.toFixed(2)} (${((amount/totalExpenses)*100).toFixed(1)}%)`).join('\n')}
+
+HIGH-SPENDING PATTERNS:
+${highSpendingDays.length > 0 ? `Detected ${highSpendingDays.length} high-spending days averaging $${(highSpendingDays.reduce((sum, day) => sum + day.amount, 0) / highSpendingDays.length).toFixed(2)} per day` : 'No unusual spending spikes detected'}
+
+DETAILED TRANSACTIONS (Last 10):
+${transactions.slice(-10).map(t => 
+  `${t.date}: ${t.description} → ${t.amount >= 0 ? '+' : ''}$${t.amount.toFixed(2)} [${t.category}]`).join('\n')}
+
+Based on this SPECIFIC data, provide insights that are:
+1. PERSONALIZED to this exact spending pattern
+2. ACTIONABLE with specific dollar amounts
+3. UNIQUE to their financial behavior
+4. DATA-DRIVEN with percentages and calculations
+
+Analyze and respond with:
+
+💡 PERSONALIZED INSIGHTS (Based on YOUR specific data):
+- Your unique spending signature: [describe their specific pattern]
+- Compared to similar income levels, you are: [specific comparison]
+- Your biggest financial strength: [specific to their data]
+- Your primary financial risk: [specific concern]
+
+📊 BEHAVIORAL ANALYSIS:
+- Peak spending periods: [identify their specific patterns]
+- Spending triggers detected: [based on transaction descriptions]
+- Category dominance: [explain why certain categories dominate]
+- Transaction frequency patterns: [daily/weekly analysis]
+
+💰 CUSTOM OPTIMIZATION PLAN:
+- Immediate savings potential: $[specific amount] monthly
+- Quick wins: [3 specific actions with dollar impacts]
+- Long-term strategy: [based on their exact situation]
+- Category rebalancing: [specific percentage changes needed]
+
+🎯 30-DAY ACTION PLAN:
+- Week 1: [specific task with expected $X savings]
+- Week 2: [specific task with expected $X savings]  
+- Week 3: [specific task with expected $X savings]
+- Week 4: [specific task with expected $X savings]
+
+🔮 PREDICTIVE ANALYSIS:
+- At current rate, in 6 months you'll have: $[calculation]
+- If you reduce [top category] by 15%, you'll save: $[specific amount]
+- Your financial trajectory: [improving/declining/stable with reasoning]
+
+Be specific, use their exact numbers, and avoid generic advice. Reference their actual transaction descriptions and amounts.`;
+
+    // Call IBM Granite AI with enhanced authentication and parameters
     const response = await fetch('https://us-south.ml.cloud.ibm.com/ml/v1/text/generation?version=2023-05-29', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${ibmApiKey}`,
         'Content-Type': 'application/json',
-        'Accept': 'application/json'
+        'Accept': 'application/json',
+        'X-IBM-User-Agent': 'Granite-Financial-Advisor/1.0'
       },
       body: JSON.stringify({
-        input: `As a professional financial advisor, analyze these detailed financial transactions and provide comprehensive insights:
-
-FINANCIAL OVERVIEW:
-• Total Income: $${totalIncome.toFixed(2)}
-• Total Expenses: $${totalExpenses.toFixed(2)}
-• Net Savings: $${(totalIncome - totalExpenses).toFixed(2)}
-• Savings Rate: ${totalIncome > 0 ? ((totalIncome - totalExpenses) / totalIncome * 100).toFixed(1) : '0'}%
-• Active Categories: ${categories.join(', ')}
-• Transaction Count: ${transactions.length}
-
-TRANSACTION DETAILS:
-${transactionSummary}
-
-Please provide a DETAILED financial analysis covering:
-
-📊 SPENDING PATTERN ANALYSIS:
-- Identify your top 3 spending categories and their percentage of total expenses
-- Analyze spending frequency and timing patterns
-- Compare spending habits across different time periods
-- Highlight any seasonal or cyclical spending trends
-
-💰 BUDGET OPTIMIZATION STRATEGIES:
-- Provide specific percentage reduction targets for overspending categories
-- Suggest realistic monthly budget allocations for each category
-- Recommend the 50/30/20 rule application to your specific situation
-- Identify categories where you can implement immediate cost-cutting measures
-
-🎯 SAVINGS OPPORTUNITIES:
-- Calculate potential monthly savings from reducing specific expenses by 10-20%
-- Identify subscriptions or recurring charges that could be eliminated
-- Suggest switching to more cost-effective alternatives for major expense categories
-- Recommend optimal savings goals based on your income level
-
-🏥 FINANCIAL HEALTH ASSESSMENT:
-- Rate your financial health on a scale of 1-10 with detailed reasoning
-- Assess your emergency fund adequacy (aim for 3-6 months of expenses)
-- Evaluate your debt-to-income ratio if applicable
-- Compare your savings rate to recommended financial benchmarks
-
-🚨 ANOMALY & RISK DETECTION:
-- Flag any unusually large transactions that deviate from normal patterns
-- Identify potential fraudulent or duplicate charges
-- Highlight categories with sudden spending spikes
-- Warn about any concerning financial trends
-
-🔮 ACTIONABLE RECOMMENDATIONS:
-- Provide 5 specific, measurable action items you can implement this month
-- Suggest apps, tools, or methods to track and improve spending habits
-- Recommend a personalized 3-month financial improvement plan
-- Set realistic short-term and long-term financial goals
-
-Format your response with clear headers, bullet points, and specific numbers. Be thorough yet practical in your recommendations.`,
+        input: dynamicPrompt,
         parameters: {
-          decoding_method: "greedy",
-          max_new_tokens: 500,
-          min_new_tokens: 0,
+          decoding_method: "sample",
+          max_new_tokens: 800,
+          min_new_tokens: 400,
           stop_sequences: [],
-          repetition_penalty: 1
+          repetition_penalty: 1.1,
+          temperature: 0.7,
+          top_p: 0.9,
+          top_k: 50
         },
         model_id: "ibm/granite-13b-chat-v2",
         project_id: Deno.env.get('IBM_PROJECT_ID') || 'default'
